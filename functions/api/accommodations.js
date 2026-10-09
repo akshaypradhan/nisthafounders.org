@@ -1,15 +1,14 @@
-
 document.getElementById('accommodation-form').addEventListener('submit', async function(e) {
   e.preventDefault();
 
-  // 1. Gather values from your form input fields
+  // 1. Gather values (with temporary defaults for testing)
   const formData = {
-    student_name: document.getElementById('student_name').value,
-    address: document.getElementById('address').value,
-    start_date: document.getElementById('start_date').value,
-    end_date: document.getElementById('end_date').value,
-    status: document.getElementById('status').value,
-    payment_status: document.getElementById('payment_status').value
+    student_name: document.getElementById('student_name').value || 'Jane Doe',
+    address: document.getElementById('address').value || '123 University Ave',
+    start_date: document.getElementById('start_date').value || '2026-09-01',
+    end_date: document.getElementById('end_date').value || '2027-05-31',
+    status: document.getElementById('status').value || 'Active',
+    payment_status: document.getElementById('payment_status').value || 'Paid'
   };
 
   try {
@@ -22,7 +21,6 @@ document.getElementById('accommodation-form').addEventListener('submit', async f
       body: JSON.stringify(formData)
     });
 
-    // 3. Read response safely as text first (to catch any HTML/Server errors cleanly)
     const responseText = await response.text();
     let result;
     try {
@@ -31,14 +29,12 @@ document.getElementById('accommodation-form').addEventListener('submit', async f
       result = { error: responseText || `Server returned status ${response.status}` };
     }
 
-    // 4. Handle server errors
     if (!response.ok) {
       throw new Error(result.error || 'Failed to save accommodation');
     }
 
-    // 5. Success!
     alert('Accommodation saved successfully!');
-    this.reset(); // Clears out the form inputs
+    this.reset();
 
   } catch (err) {
     console.error('Save failed:', err);
