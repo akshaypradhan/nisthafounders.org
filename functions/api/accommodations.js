@@ -14,7 +14,7 @@ document.getElementById('accommodation-form').addEventListener('submit', async f
 
   try {
     // 2. Send the data to your backend endpoint
-    const response = await fetch('/accommodations', {
+    const response = await fetch('/api/accommodations', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
