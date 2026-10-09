@@ -1,277 +1,76 @@
-<!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nistha Founders | Affordable Quality Education & Social Welfare</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script>
-        // Tailwind Custom Configuration
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            50: '#f0f9ff',
-                            100: '#e0f2fe',
-                            500: '#0284c7',
-                            600: '#0369a1',
-                            700: '#035485',
-                            800: '#075985',
-                            900: '#0c4a6e',
-                        },
-                        accent: {
-                            500: '#f59e0b',
-                            600: '#d97706',
-                        }
-                    }
-                }
-            }
-        }
-
-        // ==========================================
-        // DATABASE CONFIGURATION (SQLite / PocketBase)
-        // ==========================================
-        // Replace with your active PocketBase / SQLite API endpoint
-        const SQLITE_API_ENDPOINT = "/api/accommodations";
-    </script>
-</head>
-<body class="bg-slate-50 text-slate-800 font-sans antialiased">
-
-    <!-- Announcement Bar -->
-    <div class="bg-brand-900 text-white text-xs md:text-sm py-2 px-4 text-center font-medium">
-        <span class="bg-amber-500 text-slate-900 font-bold px-2 py-0.5 rounded text-xs uppercase mr-2">Flat Pricing</span>
-        Universal Access: All Educational Programs for just <strong class="text-amber-300 font-bold">$100/Month</strong>. 
-        <a href="#pricing" class="underline hover:text-amber-300 ml-2">Learn More &rarr;</a>
+<form id="accommodation-form" class="space-y-4">
+    <div>
+        <label class="block text-xs uppercase tracking-wider text-neutral-300 mb-1 font-mono font-semibold">Student Name</label>
+        <input type="text" id="student_name" required class="w-full bg-darkbg border border-mutedborder rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-accentglow transition" placeholder="Full name">
     </div>
-
-    <!-- Navigation Header -->
-    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur shadow-sm border-b border-slate-100">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 bg-brand-600 text-white rounded-xl flex items-center justify-center font-black text-xl shadow-md">
-                    NF
-                </div>
-                <div>
-                    <a href="#" class="text-xl font-bold text-slate-900 tracking-tight">Nistha Founders</a>
-                    <span class="block text-xs text-brand-600 font-semibold tracking-wider uppercase">nisthafounders.org</span>
-                </div>
-            </div>
-
-            <!-- Desktop Nav -->
-            <nav class="hidden md:flex items-center space-x-8 text-sm font-medium text-slate-600">
-                <a href="#about" class="hover:text-brand-600 transition">About Us</a>
-                <a href="#programs" class="hover:text-brand-600 transition">Programs</a>
-                <a href="#pricing" class="hover:text-brand-600 transition">Tuition ($100/mo)</a>
-                <a href="#housing" class="hover:text-brand-600 transition">Housing</a>
-                <a href="#trustees" class="hover:text-brand-600 transition">Trustees</a>
-            </nav>
-
-            <div class="hidden md:flex items-center space-x-4">
-                <button onclick="openPaymentModal('$100/mo Tuition Pass')" class="bg-brand-600 hover:bg-brand-700 text-white px-5 py-2.5 rounded-xl font-semibold shadow-sm transition">
-                    Pay Tuition ($100/mo)
-                </button>
-            </div>
+    <div>
+        <label class="block text-xs uppercase tracking-wider text-neutral-300 mb-1 font-mono font-semibold">Facility / Address</label>
+        <input type="text" id="address" required class="w-full bg-darkbg border border-mutedborder rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-accentglow transition" placeholder="Room / Unit ID">
+    </div>
+    <div class="grid grid-cols-2 gap-2">
+        <div>
+            <label class="block text-xs uppercase tracking-wider text-neutral-300 mb-1 font-mono font-semibold">Start Date</label>
+            <input type="date" id="start_date" required class="w-full bg-darkbg border border-mutedborder rounded-lg px-2 py-2 text-white text-xs focus:outline-none focus:border-accentglow transition">
         </div>
-    </header>
-
-    <!-- Hero Section -->
-    <section class="relative bg-gradient-to-b from-brand-50/50 via-white to-slate-50 py-20 lg:py-28 overflow-hidden">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-3xl mx-auto">
-                <div class="inline-flex items-center space-x-2 bg-brand-100/80 text-brand-800 px-4 py-1.5 rounded-full text-sm font-semibold mb-6">
-                    <i class="fa-solid fa-bolt text-amber-500"></i>
-                    <span>⚡ Flat Fee: $100/Month — Access All Educational Programs</span>
-                </div>
-                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-tight mb-6">
-                    Empowering Minds Through <span class="text-brand-600">Affordable Education</span> & Welfare
-                </h1>
-                <p class="text-lg text-slate-600 leading-relaxed mb-8">
-                    Nistha Founders provides world-class educational coaching across 10th/12th Board Exams, IIT-JEE, NEET, UPSC, Coding, and GenAI for a standardized flat rate of <strong>$100/month</strong>.
-                </p>
-
-                <!-- Hero CTA Buttons -->
-                <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-                    <button onclick="openEnrollmentModal()" class="w-full sm:w-auto bg-brand-600 hover:bg-brand-700 text-white px-8 py-4 rounded-xl font-bold shadow-lg shadow-brand-500/25 transition">
-                        Enroll Now ($100/Month)
-                    </button>
-                    <button onclick="openPaymentModal('General Donation')" class="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-slate-900 px-8 py-4 rounded-xl font-bold shadow-md transition">
-                        Support / Donate
-                    </button>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Pricing Section ($100/month) -->
-    <section id="pricing" class="py-20 bg-white border-y border-slate-200/80">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-2xl mx-auto mb-16">
-                <h2 class="text-3xl font-extrabold text-slate-900 sm:text-4xl mb-4">Simple, Universal Pricing</h2>
-                <p class="text-slate-600 text-lg">No hidden fees, no tier upgrades. One single monthly rate gives you full access to all academic streams and learning channels.</p>
-            </div>
-
-            <div class="max-w-md mx-auto bg-gradient-to-b from-slate-900 to-slate-800 rounded-3xl text-white p-8 md:p-10 shadow-2xl relative">
-                <div class="absolute -top-4 right-8 bg-amber-500 text-slate-950 text-xs font-black uppercase tracking-wider px-3 py-1 rounded-full shadow">
-                    Flat Monthly Rate
-                </div>
-                <h3 class="text-2xl font-bold mb-2">All-Inclusive Academic Pass</h3>
-                <p class="text-slate-400 text-sm mb-6">Complete access to all live classes, recorded content, and study centers.</p>
-                
-                <div class="flex items-baseline mb-6">
-                    <span class="text-5xl font-black tracking-tight text-white">$100</span>
-                    <span class="text-slate-400 font-medium ml-2">/ month (~₹8,300)</span>
-                </div>
-
-                <ul class="space-y-4 text-sm text-slate-300 mb-8 border-t border-slate-700/60 pt-6">
-                    <li class="flex items-center"><i class="fa-solid fa-check text-amber-400 mr-3"></i> 10th & 12th Board Prep</li>
-                    <li class="flex items-center"><i class="fa-solid fa-check text-amber-400 mr-3"></i> IIT-JEE & NEET Coaching</li>
-                    <li class="flex items-center"><i class="fa-solid fa-check text-amber-400 mr-3"></i> UPSC & Civil Services Prep</li>
-                    <li class="flex items-center"><i class="fa-solid fa-check text-amber-400 mr-3"></i> AI, Coding & GenAI Bootcamps</li>
-                    <li class="flex items-center"><i class="fa-solid fa-check text-amber-400 mr-3"></i> Live + Downloadable Offline Lectures</li>
-                    <li class="flex items-center"><i class="fa-solid fa-check text-amber-400 mr-3"></i> 24/7 Emergency & First Aid Care</li>
-                </ul>
-
-                <button onclick="openPaymentModal('$100/mo Tuition Pass')" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold py-4 rounded-xl shadow-lg transition">
-                    Get Started — $100/Month
-                </button>
-            </div>
-        </div>
-    </section>
-
-    <!-- Housing & Accommodation Section -->
-    <section id="housing" class="py-20 bg-slate-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                <div>
-                    <span class="text-brand-600 font-bold uppercase tracking-wider text-sm">Residential Welfare</span>
-                    <h2 class="text-3xl font-extrabold text-slate-900 sm:text-4xl mt-2 mb-6">Subsidized Student Housing & Hostel</h2>
-                    <p class="text-slate-600 leading-relaxed mb-6">
-                        We provide clean, safe, and subsidized living quarters for remote students. Housing is managed as a separate, non-profit add-on service.
-                    </p>
-                    <ul class="space-y-3 text-slate-700 font-medium mb-8">
-                        <li class="flex items-center"><i class="fa-solid fa-bed text-brand-600 mr-3"></i> Furnished dormitories & study tables</li>
-                        <li class="flex items-center"><i class="fa-solid fa-utensils text-brand-600 mr-3"></i> Nutritious daily meals</li>
-                        <li class="flex items-center"><i class="fa-solid fa-kit-medical text-brand-600 mr-3"></i> 24/7 First Aid & Medical Assistance</li>
-                    </ul>
-                    <button onclick="openHousingModal()" class="bg-slate-900 hover:bg-slate-800 text-white font-bold px-6 py-3.5 rounded-xl shadow transition">
-                        Apply for Housing Grant
-                    </button>
-                </div>
-                <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-200">
-                    <h3 class="text-xl font-bold text-slate-900 mb-4">Need-Based Financial Assistance</h3>
-                    <p class="text-slate-600 text-sm mb-6">Students who cannot afford housing fees can apply for 100% tuition and boarding grants through our board of trustees.</p>
-                    <div class="bg-brand-50 p-4 rounded-xl border border-brand-100 text-brand-900 text-sm">
-                        <i class="fa-solid fa-circle-info mr-2 text-brand-600"></i> All applications are logged in real-time to our SQLite database for fast review.
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Trustees Section -->
-    <section id="trustees" class="py-20 bg-white border-t border-slate-200/80">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 class="text-3xl font-extrabold text-slate-900 mb-4">Board of Trustees</h2>
-            <p class="text-slate-600 mb-12">Guiding Nistha Founders with transparency, dedication, and service.</p>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="p-6 bg-slate-50 rounded-2xl border border-slate-100">
-                    <div class="w-20 h-20 bg-brand-200 text-brand-800 rounded-full flex items-center justify-center font-bold text-2xl mx-auto mb-4">LP</div>
-                    <h3 class="text-lg font-bold text-slate-900">Laxmi K Pradhan</h3>
-                    <p class="text-slate-500 text-sm">Trustee</p>
-                </div>
-                <div class="p-6 bg-slate-50 rounded-2xl border border-slate-100">
-                    <div class="w-20 h-20 bg-brand-200 text-brand-800 rounded-full flex items-center justify-center font-bold text-2xl mx-auto mb-4">AP</div>
-                    <h3 class="text-lg font-bold text-slate-900">Ashok Pradhan</h3>
-                    <p class="text-slate-500 text-sm">Trustee</p>
-                </div>
-                <div class="p-6 bg-slate-50 rounded-2xl border border-slate-100">
-                    <div class="w-20 h-20 bg-brand-200 text-brand-800 rounded-full flex items-center justify-center font-bold text-2xl mx-auto mb-4">AP</div>
-                    <h3 class="text-lg font-bold text-slate-900">Akshay Pradhan</h3>
-                    <p class="text-slate-500 text-sm">Trustee</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="bg-slate-900 text-slate-400 py-12 border-t border-slate-800">
-        <div class="max-w-7xl mx-auto px-4 text-center">
-            <p class="text-sm">&copy; 2026 Nistha Founders (nisthafounders.org). All rights reserved.</p>
-        </div>
-    </footer>
-
-    <!-- Payment Gateway Modal -->
-    <div id="paymentModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-md w-full p-6 relative shadow-2xl">
-            <button onclick="closePaymentModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-xl"></i></button>
-            <h3 class="text-xl font-bold text-slate-900 mb-1">Online Checkout</h3>
-            <p id="paymentPurposeText" class="text-sm text-slate-500 mb-4">$100/mo Tuition Pass</p>
-
-            <form onsubmit="handlePaymentSubmit(event)" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Full Name</label>
-                    <input type="text" id="payName" required class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-brand-500">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Email Address</label>
-                    <input type="email" id="payEmail" required class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-brand-500">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Payment Method</label>
-                    <select id="payMethod" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-brand-500">
-                        <option>UPI / QR Scan (GPay, PhonePe, Paytm)</option>
-                        <option>Credit / Debit Card</option>
-                        <option>Net Banking</option>
-                        <option>PayPal</option>
-                    </select>
-                </div>
-                <button type="submit" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-3.5 rounded-xl shadow transition">
-                    Confirm & Complete Payment
-                </button>
-            </form>
+        <div>
+            <label class="block text-xs uppercase tracking-wider text-neutral-300 mb-1 font-mono font-semibold">End Date</label>
+            <input type="date" id="end_date" required class="w-full bg-darkbg border border-mutedborder rounded-lg px-2 py-2 text-white text-xs focus:outline-none focus:border-accentglow transition">
         </div>
     </div>
+    <div class="grid grid-cols-2 gap-2">
+        <div>
+            <label class="block text-xs uppercase tracking-wider text-neutral-300 mb-1 font-mono font-semibold">Status</label>
+            <select id="status" class="w-full bg-darkbg border border-mutedborder rounded-lg px-2 py-2 text-white text-xs focus:outline-none focus:border-accentglow transition font-mono">
+                <option>Active</option>
+                <option>Pending</option>
+                <option>Checked-Out</option>
+            </select>
+        </div>
+        <div>
+            <label class="block text-xs uppercase tracking-wider text-neutral-300 mb-1 font-mono font-semibold">Payment</label>
+            <select id="payment_status" class="w-full bg-darkbg border border-mutedborder rounded-lg px-2 py-2 text-white text-xs focus:outline-none focus:border-accentglow transition font-mono">
+                <option>Paid</option>
+                <option>Pending</option>
+                <option>Exempt</option>
+            </select>
+        </div>
+    </div>
+    <button type="submit" class="w-full bg-gradient-to-r from-accentglow to-cyan-400 text-black py-3 font-black uppercase tracking-wider rounded-lg shadow-[0_0_15px_rgba(0,242,254,0.3)] hover:opacity-90 transition text-xs font-mono cursor-pointer mt-2">
+        Commit to Database
+    </button>
+</form>
 
-    <!-- JavaScript Handlers -->
-    <script>
-        function openPaymentModal(purpose) {
-            document.getElementById('paymentPurposeText').innerText = purpose;
-            document.getElementById('paymentModal').classList.remove('hidden');
+<script>
+document.getElementById('accommodation-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const payload = {
+        student_name: document.getElementById('student_name').value,
+        address: document.getElementById('address').value,
+        start_date: document.getElementById('start_date').value,
+        end_date: document.getElementById('end_date').value,
+        status: document.getElementById('status').value,
+        payment_status: document.getElementById('payment_status').value
+    };
+
+    try {
+        const response = await fetch('/api/accommodations', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        if (response.ok) {
+            alert('Successfully committed to D1 database!');
+            this.reset();
+            // Optional: location.reload(); to refresh the data table
+        } else {
+            const errData = await response.json();
+            alert('Failed to save: ' + (errData.error || 'Unknown error'));
         }
-
-        function closePaymentModal() {
-            document.getElementById('paymentModal').classList.add('hidden');
-        }
-
-        async function handlePaymentSubmit(e) {
-            e.preventDefault();
-            const payload = {
-                fullName: document.getElementById('payName').value,
-                email: document.getElementById('payEmail').value,
-                method: document.getElementById('payMethod').value,
-                purpose: document.getElementById('paymentPurposeText').innerText,
-                amount: "$100/mo",
-                trackingId: 'NF-PAY-2026-' + Math.floor(1000 + Math.random() * 9000)
-            };
-
-            try {
-                // Submit entry to PocketBase / SQLite backend endpoint
-                await fetch(SQLITE_API_ENDPOINT, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-            } catch (err) {
-                console.log("Local submission logged (Endpoint active upon configuration)");
-            }
-
-            alert(`Payment Authorized!\n\nReference ID: ${payload.trackingId}\nAmount: $100/mo\n\nThank you for choosing Nistha Founders.`);
-            closePaymentModal();
-        }
-    </script>
-</body>
-</html>
+    } catch (err) {
+        console.error('Network error:', err);
+        alert('Error connecting to the backend API.');
+    }
+});
+</script>
