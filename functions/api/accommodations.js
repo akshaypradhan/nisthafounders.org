@@ -1,67 +1,47 @@
-// 1. Helper function to fetch recommendations from the D1 database
-async function recommendations(env) {
-  const { results } = await env.DB.prepare(
-    "SELECT * FROM accommodations ORDER BY id DESC LIMIT 5"
-  ).all();
-  
-  return results;
-}
 
-// 2. Main Cloudflare Worker entry point
-export async function onRequest(context) {
-  const { request, env } = context;
-  const url = new URL(request.url);
+document.getElementById('accommodation-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
 
-  // Route: GET /accommodations/recommendations (or just checking the path)
-  if (request.method === "GET" && url.pathname.includes("/recommendations")) {
+  // 1. Gather values from your form input fields
+  const formData = {
+    student_name: document.getElementById('student_name').value,
+    address: document.getElementById('address').value,
+    start_date: document.getElementById('start_date').value,
+    end_date: document.getElementById('end_date').value,
+    status: document.getElementById('status').value,
+    payment_status: document.getElementById('payment_status').value
+  };
+
+  try {
+    // 2. Send the data to your backend endpoint
+    const response = await fetch('/accommodations', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(formData)
+    });
+
+    // 3. Read response safely as text first (to catch any HTML/Server errors cleanly)
+    const responseText = await response.text();
+    let result;
     try {
-      const data = await recommendations(env);
-      return new Response(JSON.stringify(data), {
-        headers: { "Content-Type": "application/json" }
-      });
+      result = JSON.parse(responseText);
     } catch (err) {
-      return new Response(JSON.stringify({ success: false, error: err.message }), {
-        status: 500,
-        headers: { "Content-Type": "application/json" }
-      });
+      result = { error: responseText || `Server returned status ${response.status}` };
     }
-  }
 
-  // Route: POST /accommodations (Insert new record)
-  if (request.method === "POST") {
-    try {
-      const data = await request.json();
-      
-      const query = `
-        INSERT INTO accommodations (student_name, address, start_date, end_date, status, payment_status) 
-        VALUES (?, ?, ?, ?, ?, ?)
-      `;
-      
-      await env.DB.prepare(query)
-        .bind(
-          data.student_name, 
-          data.address, 
-          data.start_date, 
-          data.end_date, 
-          data.status, 
-          data.payment_status
-        )
-        .run();
-
-      return new Response(JSON.stringify({ success: true }), {
-        headers: { "Content-Type": "application/json" }
-      });
-    } catch (err) {
-      return new Response(JSON.stringify({ success: false, error: err.message }), {
-        status: 500,
-        headers: { "Content-Type": "application/json" }
-      });
+    // 4. Handle server errors
+    if (!response.ok) {
+      throw new Error(result.error || 'Failed to save accommodation');
     }
-  }
 
-  // Fallback for any other request types
-  return new Response(JSON.stringify({ error: "Route not found" }), {
-    status: 404,
-    headers: { "Content-Type": "application/json" }
-  });
-}
+    // 5. Success!
+    alert('Accommodation saved successfully!');
+    this.reset(); // Clears out the form inputs
+
+  } catch (err) {
+    console.error('Save failed:', err);
+    alert('Failed to save: ' + err.message);
+  }
+});
