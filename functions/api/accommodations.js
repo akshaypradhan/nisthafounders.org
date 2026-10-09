@@ -1,8 +1,33 @@
+// 1. Helper function to fetch recommendations from the D1 database
+async function recommendations(env) {
+  const { results } = await env.DB.prepare(
+    "SELECT * FROM accommodations ORDER BY id DESC LIMIT 5"
+  ).all();
+  
+  return results;
+}
+
+// 2. Main Cloudflare Worker entry point
 export async function onRequest(context) {
   const { request, env } = context;
-  // Note: env.DB will automatically map to your D1 database named 'nistha-db'
+  const url = new URL(request.url);
 
-  // Handle POST: Insert new accommodation record
+  // Route: GET /accommodations/recommendations (or just checking the path)
+  if (request.method === "GET" && url.pathname.includes("/recommendations")) {
+    try {
+      const data = await recommendations(env);
+      return new Response(JSON.stringify(data), {
+        headers: { "Content-Type": "application/json" }
+      });
+    } catch (err) {
+      return new Response(JSON.stringify({ success: false, error: err.message }), {
+        status: 500,
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+  }
+
+  // Route: POST /accommodations (Insert new record)
   if (request.method === "POST") {
     try {
       const data = await request.json();
@@ -34,23 +59,9 @@ export async function onRequest(context) {
     }
   }
 
-  // Handle GET: Fetch all active records to display in the table
-  if (request.method === "GET") {
-    try {
-      const { results } = await env.DB.prepare(
-        "SELECT * FROM accommodations ORDER BY id DESC"
-      ).all();
-
-      return new Response(JSON.stringify(results), {
-        headers: { "Content-Type": "application/json" }
-      });
-    } catch (err) {
-      return new Response(JSON.stringify({ success: false, error: err.message }), {
-        status: 500,
-        headers: { "Content-Type": "application/json" }
-      });
-    }
-  }
-
-  return new Response("Method not allowed", { status: 405 });
+  // Fallback for any other request types
+  return new Response(JSON.stringify({ error: "Route not found" }), {
+    status: 404,
+    headers: { "Content-Type": "application/json" }
+  });
 }
