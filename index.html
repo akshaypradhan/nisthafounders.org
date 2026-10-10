@@ -41,36 +41,39 @@
 </form>
 
 <script>
-document.getElementById('accommodation-form').addEventListener('submit', async function(e) {
-    e.preventDefault();
+document.querySelector('form').addEventListener('submit', async function (e) {
+  e.preventDefault(); // Stops the default page reload
 
-    const payload = {
-        student_name: document.getElementById('student_name').value,
-        address: document.getElementById('address').value,
-        start_date: document.getElementById('start_date').value,
-        end_date: document.getElementById('end_date').value,
-        status: document.getElementById('status').value,
-        payment_status: document.getElementById('payment_status').value
-    };
+  // Gather form data
+  const formData = {
+    student_name: document.getElementById('student_name').value,
+    address: document.getElementById('address').value, // or facility_address
+    start_date: document.getElementById('start_date').value,
+    end_date: document.getElementById('end_date').value,
+    status: 'Active',
+    payment_status: 'Paid'
+  };
 
-    try {
-        const response = await fetch('/api/accommodations', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
+  try {
+    const response = await fetch('/api/accommodations', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(formData)
+    });
 
-        if (response.ok) {
-            alert('Successfully committed to D1 database!');
-            this.reset();
-            // Optional: location.reload(); to refresh the data table
-        } else {
-            const errData = await response.json();
-            alert('Failed to save: ' + (errData.error || 'Unknown error'));
-        }
-    } catch (err) {
-        console.error('Network error:', err);
-        alert('Error connecting to the backend API.');
+    const result = await response.json();
+    
+    if (result.success) {
+      alert('Saved successfully!');
+      this.reset(); // Clear the form
+    } else {
+      alert('Error: ' + result.error);
     }
+  } catch (err) {
+    console.error('Submission failed:', err);
+    alert('Network error occurred.');
+  }
 });
 </script>
